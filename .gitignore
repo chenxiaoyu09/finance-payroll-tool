@@ -14,7 +14,7 @@ bundle-build
 .vite
 
 # Runtime data
-uploads
+/uploads
 workflow-state.json
 upload-records.json
 
