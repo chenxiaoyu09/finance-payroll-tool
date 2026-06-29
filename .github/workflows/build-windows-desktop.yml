@@ -41,6 +41,10 @@ jobs:
         working-directory: apps/server
         run: pnpm install --frozen-lockfile=false
 
+      - name: Generate Prisma client
+        working-directory: apps/server
+        run: pnpm prisma:generate
+
       - name: Install web dependencies
         working-directory: apps/web
         run: pnpm install --frozen-lockfile=false
