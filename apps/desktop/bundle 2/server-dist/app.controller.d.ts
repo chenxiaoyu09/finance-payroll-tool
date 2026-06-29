@@ -1,0 +1,14 @@
+import { AppService } from './app.service';
+export declare class AppController {
+    private readonly appService;
+    constructor(appService: AppService);
+    getHealth(): {
+        ok: boolean;
+        service: string;
+        timestamp: string;
+        storage: {
+            uploadDir: string;
+            uploadRecordMode: string;
+        };
+    };
+}

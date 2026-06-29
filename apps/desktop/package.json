@@ -1,0 +1,82 @@
+{
+  "name": "finance-payroll-desktop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Desktop wrapper for finance payroll tool",
+  "main": "main.js",
+  "scripts": {
+    "dev": "node scripts/dev.js",
+    "start": "electron .",
+    "build:web": "cd ../web && VITE_API_BASE_URL=/api pnpm build",
+    "build:server": "cd ../server && pnpm build",
+    "build": "pnpm build:server && pnpm build:web",
+    "prepare:bundle": "node scripts/prepare-bundle.js",
+    "start:desktop": "pnpm build && electron .",
+    "smoke:fallback": "cd ../server && pnpm build && cd ../desktop && node scripts/smoke-fallback.js",
+    "dist:dir": "pnpm build && pnpm prepare:bundle && electron-builder --dir",
+    "dist:mac": "pnpm build && pnpm prepare:bundle && electron-builder --mac dmg",
+    "dist:win-portable": "pnpm build && pnpm prepare:bundle && electron-builder --win portable zip",
+    "dist:win-dir": "pnpm build && pnpm prepare:bundle && electron-builder --win dir"
+  },
+  "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.kristen.financepayroll",
+    "productName": "财务算薪系统",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "main.js",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "bundle/server-dist",
+        "to": "bundle/server-dist"
+      },
+      {
+        "from": "bundle/server-node_modules",
+        "to": "bundle/server-node_modules"
+      },
+      {
+        "from": "bundle/server-package.json",
+        "to": "bundle/server-package.json"
+      },
+      {
+        "from": "bundle/web-dist",
+        "to": "bundle/web-dist"
+      },
+      {
+        "from": "bundle/runtime-template.env",
+        "to": "bundle/runtime-template.env"
+      }
+    ],
+    "asar": true,
+    "mac": {
+      "category": "public.app-category.finance",
+      "target": [
+        "dmg"
+      ]
+    },
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    }
+  }
+}
