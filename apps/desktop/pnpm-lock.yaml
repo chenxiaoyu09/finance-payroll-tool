@@ -7,11 +7,10 @@ settings:
 importers:
 
   .:
-    dependencies:
+    devDependencies:
       electron:
         specifier: ^33.2.1
         version: 33.4.11
-    devDependencies:
       electron-builder:
         specifier: ^26.0.12
         version: 26.15.3(electron-builder-squirrel-windows@26.15.3)

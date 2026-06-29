@@ -35,15 +35,15 @@ jobs:
 
       - name: Install desktop dependencies
         working-directory: apps/desktop
-        run: pnpm install
+        run: pnpm install --frozen-lockfile=false
 
       - name: Install server dependencies
         working-directory: apps/server
-        run: pnpm install
+        run: pnpm install --frozen-lockfile=false
 
       - name: Install web dependencies
         working-directory: apps/web
-        run: pnpm install
+        run: pnpm install --frozen-lockfile=false
 
       - name: Build Windows portable and zip
         working-directory: apps/desktop
