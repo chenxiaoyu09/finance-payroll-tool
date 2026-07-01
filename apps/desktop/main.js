@@ -16,6 +16,7 @@ const SERVER_DIR = app.isPackaged
 const SERVER_ENTRY = app.isPackaged
   ? path.resolve(BUNDLE_DIR, 'server-dist/main.js')
   : path.resolve(SERVER_DIR, 'dist/main.js')
+const SERVER_RUNTIME = app.isPackaged ? process.execPath : 'node'
 const WEB_DIST_DIR = app.isPackaged
   ? path.resolve(BUNDLE_DIR, 'web-dist')
   : path.resolve(ROOT_DIR, 'apps/web/dist')
@@ -208,12 +209,13 @@ function startLocalServer() {
   }
 
   serverProcess = spawn(
-    'node',
+    SERVER_RUNTIME,
     [SERVER_ENTRY],
     {
       cwd: SERVER_DIR,
       env: {
         ...process.env,
+        ...(app.isPackaged ? { ELECTRON_RUN_AS_NODE: '1' } : {}),
         NODE_ENV: 'development',
         APP_PORT: String(SERVER_PORT),
         APP_HOST: '127.0.0.1',
@@ -222,8 +224,17 @@ function startLocalServer() {
         APP_ENV_FILE: DESKTOP_ENV_FILE,
       },
       stdio: 'pipe',
+      windowsHide: true,
     },
   )
+
+  serverProcess.on('error', (error) => {
+    log(`Bundled backend failed to start: ${error.message}`)
+    dialog.showErrorBox(
+      '本地算薪后端启动失败',
+      `无法启动内置后端：${error.message}\n\n通常这意味着应用打包不完整，或当前系统拦截了桌面程序创建本地服务进程。`,
+    )
+  })
 
   serverProcess.stdout.on('data', (chunk) => {
     process.stdout.write(`[desktop-server] ${chunk}`)
